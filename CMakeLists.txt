@@ -23,6 +23,10 @@ if(APPLE)
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
 endif()
 
+if(WIN32)
+    target_link_options(${TARGET_NAME} PRIVATE /NODEFAULTLIB:LIBCMT /FORCE:MULTIPLE)
+endif()
+
 target_link_libraries(${TARGET_NAME}
     ${ALL_LIB}
     ${ALL_EXT_LINK}

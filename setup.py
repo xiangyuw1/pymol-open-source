@@ -707,6 +707,13 @@ if WIN:
             "glew32",
             "freetype",
             "libpng",
+            "zs",
+            "brotlicommon",
+            "brotlidec",
+            "brotlienc",
+            "bz2",
+            "iconv",
+            "bcrypt",
         ]
         + (options.glut)
         * [
@@ -715,6 +722,20 @@ if WIN:
         + (options.libxml)
         * [
             "libxml2",
+        ]
+        + (options.vmd_plugins)
+        * [
+            "netcdf",
+            "libhdf5",
+            "libhdf5_hl",
+            "szip-static",
+            "aec-static",
+            "libcurl",
+            "tinyxml2",
+            "crypt32",
+            "iphlpapi",
+            "secur32",
+            "shlwapi",
         ]
     )
 
