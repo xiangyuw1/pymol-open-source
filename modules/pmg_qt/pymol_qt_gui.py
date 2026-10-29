@@ -1211,6 +1211,14 @@ def execapp():
             for v in ['QT_SCALE_FACTOR', 'QT_SCREEN_SCALE_FACTORS']):
         QtCore.QCoreApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
 
+    # Keep fractional scale factors (125%, 150%, 175%, ...) intact instead of
+    # rounding them to the nearest integer. Qt 6 uses PassThrough by default,
+    # Qt 5 needs this explicitly. PyMOL's internal GUI (layer1/Ortho.cpp) now
+    # also supports fractional scale factors.
+    if hasattr(QtGui.QGuiApplication, 'setHighDpiScaleFactorRoundingPolicy'):
+        QtGui.QGuiApplication.setHighDpiScaleFactorRoundingPolicy(
+                Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+
     # fix Windows taskbar icon
     if pymol.IS_WINDOWS:
         import ctypes

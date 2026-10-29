@@ -232,6 +232,12 @@ short CharacterRenderOpenGL(PyMOLGlobals * G, const RenderInfo * info, int id, s
   auto isTextured = TextureIsCharTextured(G, id, rec->extent);
   float sampling = 1.0F;
 
+  // The bitmap font used for the internal GUI (no RenderInfo, not a world
+  // label) has a fixed pixel size. Scale the glyph quads with the display
+  // scale factor so that the GUI text grows together with the rest of the
+  // internal GUI (rows/buttons) on HiDPI displays.
+  float gui_text_scale = (!info && !isworldlabel) ? _gScaleFactor : 1.0F;
+
   if (G->HaveGUI && G->ValidContext && isTextured) {
     if(info)
       sampling = (float) info->sampling;
@@ -246,11 +252,11 @@ short CharacterRenderOpenGL(PyMOLGlobals * G, const RenderInfo * info, int id, s
       }
       v = TextGetPos(G);
       copy3f(v, v0);
-      v0[0] -= rec->XOrig / sampling;
-      v0[1] -= rec->YOrig / sampling;
+      v0[0] -= rec->XOrig * gui_text_scale / sampling;
+      v0[1] -= rec->YOrig * gui_text_scale / sampling;
       copy3f(v0, v1);
-      v1[0] += rec->Width / sampling;
-      v1[1] += rec->Height / sampling;
+      v1[0] += rec->Width * gui_text_scale / sampling;
+      v1[1] += rec->Height * gui_text_scale / sampling;
       /*      glColor4f(0.5F,0.5F,0.5F,1.0F); */
       if (shaderCGO){
           float *worldPos = TextGetWorldPos(G);
@@ -292,7 +298,7 @@ short CharacterRenderOpenGL(PyMOLGlobals * G, const RenderInfo * info, int id, s
 #endif
       }
     }
-     TextAdvance(G, rec->Advance / sampling);
+    TextAdvance(G, rec->Advance * gui_text_scale / sampling);
   } else {
     if (!isTextured)
       success = 0;

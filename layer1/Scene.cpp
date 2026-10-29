@@ -3227,8 +3227,12 @@ static bool SceneOverlayOversizeBorder(
   unsigned int border = 1;
   unsigned int upscale = 1;
 
-  // Upscale for Retina/4K
-  if (DIP2PIXEL(height) == I->Height && DIP2PIXEL(width) == I->Width) {
+  // Upscale for Retina/4K. This is only valid for an integral scale factor:
+  // DIP2PIXEL(1) truncates fractional factors (e.g. 1.75 -> 1), which would
+  // leave `upscale` out of sync with the upscaled dimensions and make the
+  // pixel loop below read past the image buffer.
+  if (DIP2PIXEL(1) >= 1 && DIP2PIXEL(1) == _gScaleFactor &&
+      DIP2PIXEL(height) == I->Height && DIP2PIXEL(width) == I->Width) {
     upscale = DIP2PIXEL(1);
     tmp_height = DIP2PIXEL(height);
     tmp_width = DIP2PIXEL(width);

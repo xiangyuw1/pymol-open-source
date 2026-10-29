@@ -217,9 +217,27 @@ class PyMOLGLWidget(BaseGLWidget):
         '''Update PyMOL's display scale factor from the window or screen context
         @type context: QWindow or QScreen
         '''
+        if context is None:
+            context = self.windowHandle() or self.screen()
+        if context is None:
+            return
+
+        # Fractional device pixel ratios (Windows 125%, 150%, 175%, ...) must
+        # be passed through unchanged. Truncating to int would leave the
+        # OpenGL drawn internal GUI (objects panel, buttons, feedback text)
+        # at 100% while the rest of the Qt UI is scaled by the OS.
         self.fb_scale = context.devicePixelRatio()
+
+        # Optional user override to make the GUI bigger/smaller than the
+        # OS scale, e.g. PYMOL_UI_SCALE=1.25
         try:
-            self.cmd.set('display_scale_factor', int(self.fb_scale))
+            ui_scale = float(os.getenv('PYMOL_UI_SCALE') or 1.0)
+        except ValueError:
+            ui_scale = 1.0
+
+        try:
+            self.cmd.set('display_scale_factor',
+                round(self.fb_scale * ui_scale, 3))
         except BaseException as e:
             # fails with modal draw (mpng ..., modal=1)
             print(e)
@@ -234,9 +252,33 @@ class PyMOLGLWidget(BaseGLWidget):
                 window = self.parent().windowHandle()
 
             self.updateFbScale(window)
-            window.screenChanged.connect(self.updateFbScale)
-            window.screen().physicalDotsPerInchChanged.connect(
-                    lambda dpi: self.updateFbScale(window))
+
+            def _screen_dpi_changed(*_args):
+                self.updateFbScale(window)
+
+            def _connect_screen(screen):
+                old = getattr(self, '_fb_scale_screen', None)
+                if old is screen:
+                    return
+                if old is not None:
+                    try:
+                        old.logicalDotsPerInchChanged.disconnect(_screen_dpi_changed)
+                        old.physicalDotsPerInchChanged.disconnect(_screen_dpi_changed)
+                    except (RuntimeError, TypeError):
+                        pass
+                if screen is not None:
+                    screen.logicalDotsPerInchChanged.connect(_screen_dpi_changed)
+                    screen.physicalDotsPerInchChanged.connect(_screen_dpi_changed)
+                self._fb_scale_screen = screen
+
+            _connect_screen(window.screen())
+
+            def _window_screen_changed(screen):
+                # also rescale when the window is moved to another screen
+                _connect_screen(screen)
+                self.updateFbScale(window)
+
+            window.screenChanged.connect(_window_screen_changed)
 
         except AttributeError:
             # Fallback for Qt4

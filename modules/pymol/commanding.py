@@ -283,8 +283,8 @@ USAGE
                 if not contents:
                     contents = open(filename, 'rb').read(24)
                 shape = struct.unpack('>II', contents[16:24])
-                scale = _self.get_setting_int('display_scale_factor')
-                _self.viewport(shape[0] * scale, shape[1] * scale)
+                scale = _self.get_setting_float('display_scale_factor')
+                _self.viewport(int(shape[0] * scale), int(shape[1] * scale))
             except Exception as e:
                 print(e)
 

@@ -24,9 +24,9 @@ class cif_file;
 class cif_data;
 }; // namespace pymol
 
-/* retina scale factor for ortho gui */
-extern int _gScaleFactor;
-inline int DIP2PIXEL(int v) { return v * _gScaleFactor; }
+/* retina scale factor for ortho gui (may be fractional, e.g. 1.75) */
+extern float _gScaleFactor;
+inline int DIP2PIXEL(int v) { return static_cast<int>(v * _gScaleFactor); }
 inline float DIP2PIXEL(float v) { return v * _gScaleFactor; }
 
 /* all of the private singleton classes associated with a PyMOL instance */
