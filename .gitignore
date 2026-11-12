@@ -1,5 +1,6 @@
 *.pyc
 *.d
+*.pyd
 generated
 build
 .vscode
