@@ -24,8 +24,11 @@ class PyMOLDesktopGUI(object):
     file_save_mpeg = None
     file_save_mov = None
     file_save_mpng = None
+    file_save_glb = None
     file_save_gltf = None
     file_save_stl = None
+    file_save_usda = None
+    file_save_usdz = None
     log_open = None
     log_resume = None
     log_append = None
@@ -98,9 +101,12 @@ class PyMOLDesktopGUI(object):
                     ('separator',),
                     ('command', 'VRML 2...',        self.file_save_wrl),
                     ('command', 'COLLADA...',       self.file_save_dae),
+                    ('command', 'GLB...',           self.file_save_glb),
                     ('command', 'GLTF...',          self.file_save_gltf),
                     ('command', 'POV-Ray...',       self.file_save_pov),
                     ('command', 'STL...',           self.file_save_stl),
+                    ('command', 'USDA...',          self.file_save_usda),
+                    ('command', 'USDZ...',          self.file_save_usdz),
                 ]),
                 ('menu', 'Export Movie As', [
                     ('command', 'MPEG...',          self.file_save_mpeg),

@@ -122,6 +122,7 @@ from .querying import \
       get_distance,       \
       get_drag_object_name, \
       get_extent,         \
+      get_glb,            \
       get_gltf,           \
       get_idtf,           \
       get_modal_draw,     \
@@ -144,6 +145,7 @@ from .querying import \
       get_symmetry,       \
       get_title,          \
       get_type,           \
+      get_usda,           \
       get_version,        \
       get_volume_field,   \
       get_volume_histogram, \

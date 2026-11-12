@@ -817,8 +817,17 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
     def file_save_stl(self):
         self._file_save('STL File (*.stl)', 'stl')
 
+    def file_save_glb(self):
+        self._file_save('GLB File (*.glb)', 'glb')
+
     def file_save_gltf(self):
         self._file_save('GLTF File (*.gltf)', 'gltf')
+
+    def file_save_usda(self):
+        self._file_save('OpenUSD ASCII File (*.usda)', 'usda')
+
+    def file_save_usdz(self):
+        self._file_save('OpenUSD Package (*.usdz)', 'usdz')
 
     LOG_FORMATS = [
         'PyMOL Script (*.pml)',
